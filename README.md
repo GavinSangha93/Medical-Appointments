@@ -1,93 +1,80 @@
-<h1>Medical Appointment No-Show Analysis (MySQL & Tableau)</h1>
+# Medical Appointment No-Show Analysis
 
-<h2>Description</h2>
+An end-to-end healthcare analytics project using MySQL and Tableau to clean appointment data, analyze missed-appointment patterns, and help operations teams prioritize patient outreach.
 
-Objective: Clean and analyze a medical appointment dataset using MySQL, then build an interactive Tableau dashboard to identify the factors associated with missed appointments and flag patients who may require additional follow-up.
-<br><br>
+## Business Question
 
-Key Tasks:
+Which scheduling and patient-history factors are associated with missed appointments, and how can those insights support more focused reminder and follow-up efforts?
 
-<b>Cleaned and standardized field names, date formats, and data types.</b>
+## What I Built
 
-<b>Removed invalid age values and appointments with negative lead times.</b>
+- Cleaned and standardized appointment records in MySQL.
+- Converted raw timestamps into usable date fields and removed invalid records.
+- Engineered appointment lead time from scheduling and appointment dates.
+- Analyzed no-show rates by day, lead time, age group, SMS status, and neighborhood.
+- Used CTEs and window functions to calculate prior patient attendance history.
+- Created a reusable SQL view that groups appointments into operational risk tiers.
+- Built an interactive Tableau dashboard with KPI cards, filters, neighborhood rankings, and an appointment-level follow-up table.
 
-<b>Created a lead-time feature measuring the number of days between scheduling and the appointment.</b>
+## Key Findings
 
-<b>Analyzed no-show behavior by day of the week, booking lead time, age group, SMS status, and neighborhood.</b>
+- The cleaned dataset contains **110,519 appointments** with an overall **20.19% no-show rate**.
+- Appointments were scheduled an average of **10.18 days** in advance.
+- Long-lead appointments had the highest no-show rate; same-day appointments had the lowest.
+- Saturday had the highest no-show rate among the appointment days displayed.
+- The rule-based segmentation assigned **20.08%** of appointments to High Risk and **56.37%** to New Patient - Monitor.
+- Neighborhood and appointment-level views make it easier to focus outreach where missed-appointment rates are highest.
 
-<b>Used window functions and a Common Table Expression (CTE) to calculate each patient's prior appointment and no-show history.</b>
+## Technical Approach
 
-<b>Created a reusable SQL view that classifies appointments into New Patient, Low-, Medium-, and High-Risk tiers.</b>
+1. **Data preparation:** standardized field names and data types, converted dates, and removed invalid ages and negative lead times.
+2. **Feature engineering:** calculated scheduling lead time and created analysis-friendly groupings.
+3. **Exploratory analysis:** compared no-show behavior across operational and patient dimensions.
+4. **Risk segmentation:** used prior attendance history and current lead time to assign practical outreach tiers.
+5. **Visualization:** connected the prepared data to Tableau and assembled an interactive operational dashboard.
 
-<b>Built an interactive Tableau dashboard with KPI cards, risk-tier filtering, neighborhood rankings, and a high-risk patient table.</b>
+## Dashboard Preview
 
-<b>Outcome:</b> Created an end-to-end healthcare analytics project that turns raw appointment records into an analysis-ready dataset, identifies practical no-show patterns, and gives healthcare teams a dashboard for prioritizing outreach to higher-risk patients.
+![Appointment No-Show Dashboard](images/tableau-dashboard-overview.png)
 
-<h2>Key Findings</h2>
+The dashboard combines headline KPIs with lead-time and weekday comparisons, neighborhood rankings, risk-tier distribution, and an appointment-level High Risk filter.
 
-<b>The dataset contains 110,519 appointments with an overall no-show rate of 20.19%.</b>
+## SQL Walkthrough
 
-<b>Appointments were scheduled an average of 10.18 days in advance.</b>
+### Data Cleaning and Feature Engineering
 
-<b>Long-lead appointments had the highest no-show rate, while same-day appointments had the lowest.</b>
+![SQL data cleaning and lead-time feature engineering](images/sql-data-cleaning.png)
 
-<b>Saturday had the highest no-show rate among the appointment days shown.</b>
+The workflow standardizes the source data and creates the lead-time measure used throughout the analysis.
 
-<b>The patient-risk model classified 20.08% of appointments as High Risk and 56.37% as New Patient - Monitor.</b>
+### No-Show Pattern Analysis
 
-<b>Neighborhood ranking and patient-level filters make it possible to focus outreach on the locations and appointments with the greatest risk.</b>
+![SQL no-show analysis by lead time and neighborhood](images/sql-no-show-analysis.png)
 
-<h2>Languages and Utilities Used</h2>
+CASE expressions and aggregate calculations create meaningful lead-time buckets. A window ranking identifies the 15 neighborhoods with the highest no-show rates while excluding locations with fewer than 100 appointments.
 
-<b>MySQL, MySQL Workbench, Tableau</b>
+### Patient Risk Segmentation
 
-<b>SQL Window Functions, CTEs, Views, CASE Statements, and Aggregate Functions</b>
+![SQL patient risk classification view](images/sql-patient-risk-view.png)
 
-<b>Data Cleaning, Feature Engineering, Exploratory Analysis, Risk Segmentation, and Data Visualization</b>
+A CTE and window functions calculate each patient's history using earlier visits. The resulting SQL view supplies a reusable, appointment-level source for Tableau.
 
-<h2>Environments Used</h2>
+## Business Value
 
-<b>Windows 10</b> (22H2)
+This project demonstrates how scheduling data can be turned into an operational workflow. Healthcare teams could use the dashboard to focus reminder calls, SMS campaigns, scheduling interventions, and follow-up resources on appointments that meet higher-risk criteria.
 
-<h2>Project Files</h2>
+## Limitations and Next Steps
 
-<b>Medical Appointments Cleaned.sql:</b> Data cleaning, feature engineering, exploratory analysis, and patient-risk view creation.
+- The risk tiers are transparent business rules, not a validated predictive model.
+- Results show associations in historical data and should not be interpreted as causal effects.
+- The neighborhood ranking uses a minimum-volume threshold to reduce noise.
+- A production version should validate thresholds on newer data, monitor performance over time, and include relevant operational fields such as appointment type, provider, and estimated cost when available.
 
-<b>Medical Appointments Project.twbx:</b> Packaged Tableau workbook containing the interactive Appointment No-Show Dashboard.
+## Tools and Skills
 
-<h2>Program walk-through:</h2>
+**MySQL · MySQL Workbench · Tableau · Data Cleaning · Feature Engineering · CTEs · Window Functions · Views · CASE Statements · Exploratory Analysis · Dashboard Design**
 
-<p align="center">
+## Project Files
 
-<b>Tableau Dashboard Overview</b>
-<br />
-The dashboard brings the project's main KPIs and risk indicators together in one view. Users can compare no-show rates by appointment day and lead time, review high-risk neighborhoods, inspect the overall risk-tier distribution, and filter the patient-level table.
-<br /><br />
-<img src="images/tableau-dashboard-overview.png" width="90%" alt="Tableau appointment no-show dashboard" />
-<br /><br />
-
-<b>Data Cleaning and Feature Engineering</b>
-<br />
-The SQL workflow standardizes inconsistent column names, converts raw timestamp strings into usable MySQL date fields, removes invalid records, and creates the lead-time measure used throughout the analysis.
-<br /><br />
-<img src="images/sql-data-cleaning.png" width="90%" alt="SQL data cleaning and lead-time feature engineering" />
-<br /><br />
-
-<b>No-Show Pattern Analysis</b>
-<br />
-CASE expressions and aggregate calculations group appointments into meaningful lead-time buckets. A window ranking then identifies the 15 neighborhoods with the highest no-show rates while excluding locations with fewer than 100 appointments.
-<br /><br />
-<img src="images/sql-no-show-analysis.png" width="90%" alt="SQL no-show analysis by lead time and neighborhood" />
-<br /><br />
-
-<b>Patient Risk Classification</b>
-<br />
-A CTE and window functions calculate each patient's appointment history using only earlier visits. The resulting SQL view assigns a practical risk tier based on prior no-show behavior and the current appointment's lead time, creating a reusable source for the Tableau dashboard.
-<br /><br />
-<img src="images/sql-patient-risk-view.png" width="90%" alt="SQL patient risk classification view" />
-
-</p>
-
-<h2>Business Value</h2>
-
-This analysis can support healthcare operations teams by helping them focus reminder calls, SMS campaigns, scheduling interventions, and follow-up resources on appointments with a higher likelihood of being missed. The dashboard also makes it easier to identify whether no-show risk is being driven by scheduling lead time, location, or a patient's prior attendance history.
+- **Medical Appointments Cleaned.sql** — cleaning, feature engineering, analysis, and risk-view creation.
+- **Medical Appointments Project.twbx** — packaged Tableau workbook containing the interactive dashboard.
